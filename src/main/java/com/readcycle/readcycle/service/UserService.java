@@ -1,5 +1,6 @@
 package com.readcycle.readcycle.service;
 import com.readcycle.readcycle.entity.User;
+import com.readcycle.readcycle.exception.ResourceNotFoundException;
 import com.readcycle.readcycle.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ public class UserService {
         return userRepository.save(user);
     }
     public User getUserById(Long id){
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with id: "+ id));
 
     }
     public void deleteUser(Long id){
@@ -28,9 +29,6 @@ public class UserService {
             user.setEmail(updatedUser.getEmail());
             user.setPassword(updatedUser.getPassword());
             return userRepository.save(user);
-
-
-
         }
         return null;
     }
