@@ -6,13 +6,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
-
+import com.readcycle.readcycle.dto.UserDTO;
 @RestController
 public class  HelloController {
 @Autowired
 private UserService userService;
 @GetMapping("/users")
-public List<User> getAllUsers(){
+public List<UserDTO> getAllUsers(){
     return userService.getAllUsers();
 }
 @PostMapping("/users")
