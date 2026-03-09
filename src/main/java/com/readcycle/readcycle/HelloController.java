@@ -4,11 +4,11 @@ import com.readcycle.readcycle.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
-public class HelloController {
+public class  HelloController {
 @Autowired
 private UserService userService;
 @GetMapping("/users")
@@ -16,7 +16,7 @@ public List<User> getAllUsers(){
     return userService.getAllUsers();
 }
 @PostMapping("/users")
-    public User createUser(@RequestBody User user){
+    public User createUser(@Valid @RequestBody User user){
     return userService.createUser(user);
 }
 @GetMapping("/users/{id}")
