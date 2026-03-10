@@ -11,9 +11,7 @@
 	<groupId>com.readcycle</groupId>
 	<artifactId>readcycle</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<properties>
-		<java.version>21</java.version>
-	</properties>
+
 	<name>readcycle</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
@@ -70,6 +68,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+
 		</dependency>
 	</dependencies>
 
