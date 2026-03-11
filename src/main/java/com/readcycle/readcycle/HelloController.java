@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
 import com.readcycle.readcycle.dto.UserDTO;
+import com.readcycle.readcycle.dto.LoginRequest;
 @RestController
 public class  HelloController {
 @Autowired
@@ -31,6 +32,10 @@ public List<UserDTO> getAllUsers(){
 @PutMapping("/users/{id}")
 public User updateUser(@PathVariable Long id, @RequestBody User updatedUser){
     return userService .updateUser(id, updatedUser);
+}
+@PostMapping("/auth/login")
+    public String login(@RequestBody LoginRequest loginRequest){
+    return userService.login(loginRequest);
 }
     }
 

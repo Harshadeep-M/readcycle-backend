@@ -9,6 +9,7 @@ import com.readcycle.readcycle.dto.UserDTO;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import com.readcycle.readcycle.dto.LoginRequest;
 @Service
 public class UserService {
 
@@ -46,10 +47,26 @@ public class UserService {
         if(user != null){
             user.setName(updatedUser.getName());
             user.setEmail(updatedUser.getEmail());
-            user.setPassword(updatedUser.getPassword());
+            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
             return userRepository.save(user);
         }
         return null;
+    }
+    public String login(LoginRequest loginRequest) {
+        User user = userRepository.findByEmail(loginRequest.getEmail());
+        if (user == null) {
+            return "User not found";
+        }
+        boolean match = passwordEncoder.matches(
+                loginRequest.getPassword(),
+                user.getPassword()
+        );
+        if(match){
+            return "Login Successful";
+        }
+        else{
+            return "Invalid password";
+        }
     }
 }
 
