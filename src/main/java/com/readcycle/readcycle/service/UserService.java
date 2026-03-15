@@ -1,4 +1,5 @@
 package com.readcycle.readcycle.service;
+import com.readcycle.readcycle.dto.ApiResponse;
 import com.readcycle.readcycle.entity.User;
 import com.readcycle.readcycle.exception.ResourceNotFoundException;
 import com.readcycle.readcycle.repository.UserRepository;
@@ -7,14 +8,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import com.readcycle.readcycle.dto.UserDTO;
 import java.util.ArrayList;
-import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.readcycle.readcycle.dto.LoginRequest;
+
 @Service
 public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Autowired
     private UserRepository userRepository;
     public List<UserDTO> getAllUsers(){
@@ -52,20 +54,20 @@ public class UserService {
         }
         return null;
     }
-    public String login(LoginRequest loginRequest) {
+    public ApiResponse login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail());
         if (user == null) {
-            return "User not found";
+            return new ApiResponse("User not found");
         }
         boolean match = passwordEncoder.matches(
                 loginRequest.getPassword(),
                 user.getPassword()
         );
         if(match){
-            return "Login Successful";
+            return new ApiResponse("Login Successful");
         }
         else{
-            return "Invalid password";
+            return new ApiResponse("Invalid password");
         }
     }
 }

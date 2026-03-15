@@ -6,8 +6,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import com.readcycle.readcycle.dto.UserDTO;
 import com.readcycle.readcycle.dto.LoginRequest;
+import com.readcycle.readcycle.dto.ApiResponse;
 @RestController
 public class  HelloController {
 @Autowired
@@ -34,9 +36,10 @@ public User updateUser(@PathVariable Long id, @RequestBody User updatedUser){
     return userService .updateUser(id, updatedUser);
 }
 @PostMapping("/auth/login")
-    public String login(@RequestBody LoginRequest loginRequest){
-    return userService.login(loginRequest);
+  public ApiResponse login(@RequestBody LoginRequest loginRequest){
+   return userService.login(loginRequest);
 }
-    }
+}
+
 
 
