@@ -15,8 +15,11 @@ public class  HelloController {
 @Autowired
 private UserService userService;
 @GetMapping("/users")
-public List<UserDTO> getAllUsers(){
-    return userService.getAllUsers();
+public List<UserDTO> getAllUsers(
+        @RequestParam int page,
+        @RequestParam int size
+){
+   return userService.getAllUsers(page, size);
 }
 @PostMapping("/users")
     public User createUser(@Valid @RequestBody User user){

@@ -10,6 +10,9 @@ import com.readcycle.readcycle.dto.UserDTO;
 import java.util.ArrayList;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.readcycle.readcycle.dto.LoginRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class UserService {
@@ -19,10 +22,11 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-    public List<UserDTO> getAllUsers(){
-        List<User> users  = userRepository.findAll();
+    public List<UserDTO> getAllUsers(int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> userPage = userRepository.findAll(pageable);
         List<UserDTO> userDTOList = new ArrayList<>();
-        for(User user : users){
+        for(User user : userPage.getContent()){
             UserDTO dto = new UserDTO(
                     user.getId(),
                     user.getName(),
