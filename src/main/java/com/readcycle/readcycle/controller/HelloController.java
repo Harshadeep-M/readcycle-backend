@@ -1,15 +1,15 @@
-package com.readcycle.readcycle;
+package com.readcycle.readcycle.controller;
 import com.readcycle.readcycle.entity.User;
 import com.readcycle.readcycle.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Map;
+
 import com.readcycle.readcycle.dto.UserDTO;
 import com.readcycle.readcycle.dto.LoginRequest;
 import com.readcycle.readcycle.dto.ApiResponse;
+
 @RestController
 public class  HelloController {
 @Autowired
@@ -22,12 +22,23 @@ public List<UserDTO> getAllUsers(
    return userService.getAllUsers(page, size);
 }
 @PostMapping("/users")
-    public User createUser(@Valid @RequestBody User user){
-    return userService.createUser(user);
+    public UserDTO createUser(@Valid @RequestBody User user){
+    User savedUser = userService.createUser(user);
+    return new UserDTO(
+            savedUser.getId(),
+            savedUser.getName(),
+            savedUser.getEmail()
+
+    );
 }
 @GetMapping("/users/{id}")
-    public User getUserById(@PathVariable Long id){
-    return userService.getUserById(id);
+    public UserDTO getUserById(@PathVariable Long id){
+    User user = userService.getUserById(id);
+    return new UserDTO(
+            user.getId(),
+            user.getName(),
+            user.getEmail()
+    );
 }
 @DeleteMapping("/users/{id}")
     public String deleteUser(@PathVariable Long id){
@@ -35,8 +46,14 @@ public List<UserDTO> getAllUsers(
     return "User deleted successfully";
 }
 @PutMapping("/users/{id}")
-public User updateUser(@PathVariable Long id, @RequestBody User updatedUser){
-    return userService .updateUser(id, updatedUser);
+public UserDTO updateUser(@PathVariable Long id, @RequestBody User updatedUser){
+   User user = userService.updateUser(id, updatedUser);
+   return new UserDTO(
+           user.getId(),
+           user.getName(),
+           user.getEmail()
+   );
+
 }
 @PostMapping("/auth/login")
   public ApiResponse login(@RequestBody LoginRequest loginRequest){
