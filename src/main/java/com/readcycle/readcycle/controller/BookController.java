@@ -22,19 +22,26 @@ public class BookController {
         return bookService.createBook(request);
     }
 
-    // GET ALL
+    // GET ALL WITH PAGINATION
     @GetMapping
-    public List<BookResponseDTO> getAllBooks() {
-        return bookService.getAllBooks();
+    public List<BookResponseDTO> getAllBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        return bookService.getAllBooks(page, size);
     }
 
-    // SEARCH BOOKS
+    // SEARCH BOOKS WITH PAGINATION
     @GetMapping("/search")
-    public List<BookResponseDTO> searchBooks(@RequestParam String title) {
-        return bookService.searchBooks(title);
+    public List<BookResponseDTO> searchBooks(
+            @RequestParam String title,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        return bookService.searchBooks(title, page, size);
     }
 
-    // GET BY ID
+    // GET BOOK BY ID
     @GetMapping("/{id:\\d+}")
     public BookResponseDTO getBookById(@PathVariable Long id) {
         return bookService.getBookById(id);
@@ -42,8 +49,10 @@ public class BookController {
 
     // UPDATE
     @PutMapping("/{id}")
-    public BookResponseDTO updateBook(@PathVariable Long id,
-                                      @Valid @RequestBody BookRequestDTO request) {
+    public BookResponseDTO updateBook(
+            @PathVariable Long id,
+            @Valid @RequestBody BookRequestDTO request) {
+
         return bookService.updateBook(id, request);
     }
 

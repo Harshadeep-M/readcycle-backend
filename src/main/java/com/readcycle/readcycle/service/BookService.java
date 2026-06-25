@@ -6,6 +6,9 @@ import com.readcycle.readcycle.entity.Book;
 import com.readcycle.readcycle.exception.ResourceNotFoundException;
 import com.readcycle.readcycle.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,13 +34,16 @@ public class BookService {
         return convertToResponseDTO(savedBook);
     }
 
-    // GET ALL
-    public List<BookResponseDTO> getAllBooks() {
+    // GET ALL WITH PAGINATION
+    public List<BookResponseDTO> getAllBooks(int page, int size) {
 
-        List<Book> books = bookRepository.findAll();
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Book> books = bookRepository.findAll(pageable);
+
         List<BookResponseDTO> responseList = new ArrayList<>();
 
-        for (Book book : books) {
+        for (Book book : books.getContent()) {
             responseList.add(convertToResponseDTO(book));
         }
 
@@ -78,13 +84,16 @@ public class BookService {
         bookRepository.delete(book);
     }
 
-    // SEARCH BOOKS
-    public List<BookResponseDTO> searchBooks(String title) {
+    // SEARCH WITH PAGINATION
+    public List<BookResponseDTO> searchBooks(String title, int page, int size) {
 
-        List<Book> books = bookRepository.findByTitleContainingIgnoreCase(title);
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Book> books = bookRepository.findByTitleContainingIgnoreCase(title, pageable);
+
         List<BookResponseDTO> responseList = new ArrayList<>();
 
-        for (Book book : books) {
+        for (Book book : books.getContent()) {
             responseList.add(convertToResponseDTO(book));
         }
 
