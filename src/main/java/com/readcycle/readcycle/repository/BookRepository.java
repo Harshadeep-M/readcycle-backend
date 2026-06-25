@@ -1,6 +1,14 @@
 package com.readcycle.readcycle.repository;
+
 import com.readcycle.readcycle.entity.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
-public interface BookRepository extends JpaRepository<Book, Long>{
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface BookRepository extends JpaRepository<Book, Long> {
+
+    List<Book> findByTitleContainingIgnoreCase(String title);
 
 }

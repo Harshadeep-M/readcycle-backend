@@ -1,39 +1,54 @@
 package com.readcycle.readcycle.controller;
 
-import com.readcycle.readcycle.entity.Book;
+import com.readcycle.readcycle.dto.BookRequestDTO;
+import com.readcycle.readcycle.dto.BookResponseDTO;
 import com.readcycle.readcycle.service.BookService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/books")
 public class BookController {
 
     @Autowired
     private BookService bookService;
 
-    @PostMapping("/books")
-    public Book createBook(@RequestBody Book book) {
-        return bookService.createBook(book);
+    // CREATE
+    @PostMapping
+    public BookResponseDTO createBook(@Valid @RequestBody BookRequestDTO request) {
+        return bookService.createBook(request);
     }
 
-    @GetMapping("/books")
-    public List<Book> getAllBooks() {
+    // GET ALL
+    @GetMapping
+    public List<BookResponseDTO> getAllBooks() {
         return bookService.getAllBooks();
     }
 
-    @GetMapping("/books/{id}")
-    public Book getBookById(@PathVariable Long id) {
+    // SEARCH BOOKS
+    @GetMapping("/search")
+    public List<BookResponseDTO> searchBooks(@RequestParam String title) {
+        return bookService.searchBooks(title);
+    }
+
+    // GET BY ID
+    @GetMapping("/{id:\\d+}")
+    public BookResponseDTO getBookById(@PathVariable Long id) {
         return bookService.getBookById(id);
     }
 
-    @PutMapping("/books/{id}")
-    public Book updateBook(@PathVariable Long id, @RequestBody Book book) {
-        return bookService.updateBook(id, book);
+    // UPDATE
+    @PutMapping("/{id}")
+    public BookResponseDTO updateBook(@PathVariable Long id,
+                                      @Valid @RequestBody BookRequestDTO request) {
+        return bookService.updateBook(id, request);
     }
 
-    @DeleteMapping("/books/{id}")
+    // DELETE
+    @DeleteMapping("/{id}")
     public String deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
         return "Book deleted successfully";
