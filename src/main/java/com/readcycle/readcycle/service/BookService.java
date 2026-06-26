@@ -2,13 +2,16 @@ package com.readcycle.readcycle.service;
 
 import com.readcycle.readcycle.dto.BookRequestDTO;
 import com.readcycle.readcycle.dto.BookResponseDTO;
+import com.readcycle.readcycle.dto.PaginationResponseDTO;
 import com.readcycle.readcycle.entity.Book;
 import com.readcycle.readcycle.exception.ResourceNotFoundException;
+import com.readcycle.readcycle.mapper.BookMapper;
 import com.readcycle.readcycle.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,31 +26,42 @@ public class BookService {
     // CREATE
     public BookResponseDTO createBook(BookRequestDTO request) {
 
-        Book book = new Book();
-        book.setTitle(request.getTitle());
-        book.setAuthor(request.getAuthor());
-        book.setDescription(request.getDescription());
-        book.setAvailable(request.getAvailable());
+        Book book = BookMapper.toEntity(request);
 
         Book savedBook = bookRepository.save(book);
 
-        return convertToResponseDTO(savedBook);
+        return BookMapper.toResponseDTO(savedBook);
     }
 
-    // GET ALL WITH PAGINATION
-    public List<BookResponseDTO> getAllBooks(int page, int size) {
+    // GET ALL WITH PAGINATION + SORTING
+    public PaginationResponseDTO<BookResponseDTO> getAllBooks(
+            int page,
+            int size,
+            String sortBy,
+            String direction) {
 
-        Pageable pageable = PageRequest.of(page, size);
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<Book> books = bookRepository.findAll(pageable);
 
         List<BookResponseDTO> responseList = new ArrayList<>();
 
         for (Book book : books.getContent()) {
-            responseList.add(convertToResponseDTO(book));
+            responseList.add(BookMapper.toResponseDTO(book));
         }
 
-        return responseList;
+        return new PaginationResponseDTO<>(
+                responseList,
+                books.getNumber(),
+                books.getTotalPages(),
+                books.getTotalElements(),
+                books.getSize(),
+                books.isLast()
+        );
     }
 
     // GET BY ID
@@ -56,7 +70,7 @@ public class BookService {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
 
-        return convertToResponseDTO(book);
+        return BookMapper.toResponseDTO(book);
     }
 
     // UPDATE
@@ -65,14 +79,11 @@ public class BookService {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Book not found"));
 
-        book.setTitle(request.getTitle());
-        book.setAuthor(request.getAuthor());
-        book.setDescription(request.getDescription());
-        book.setAvailable(request.getAvailable());
+        BookMapper.updateEntity(book, request);
 
         Book updatedBook = bookRepository.save(book);
 
-        return convertToResponseDTO(updatedBook);
+        return BookMapper.toResponseDTO(updatedBook);
     }
 
     // DELETE
@@ -84,31 +95,35 @@ public class BookService {
         bookRepository.delete(book);
     }
 
-    // SEARCH WITH PAGINATION
-    public List<BookResponseDTO> searchBooks(String title, int page, int size) {
+    // SEARCH WITH PAGINATION + SORTING
+    public PaginationResponseDTO<BookResponseDTO> searchBooks(
+            String title,
+            int page,
+            int size,
+            String sortBy,
+            String direction) {
 
-        Pageable pageable = PageRequest.of(page, size);
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<Book> books = bookRepository.findByTitleContainingIgnoreCase(title, pageable);
 
         List<BookResponseDTO> responseList = new ArrayList<>();
 
         for (Book book : books.getContent()) {
-            responseList.add(convertToResponseDTO(book));
+            responseList.add(BookMapper.toResponseDTO(book));
         }
 
-        return responseList;
-    }
-
-    // Convert Entity to Response DTO
-    private BookResponseDTO convertToResponseDTO(Book book) {
-
-        return new BookResponseDTO(
-                book.getId(),
-                book.getTitle(),
-                book.getAuthor(),
-                book.getDescription(),
-                book.isAvailable()
+        return new PaginationResponseDTO<>(
+                responseList,
+                books.getNumber(),
+                books.getTotalPages(),
+                books.getTotalElements(),
+                books.getSize(),
+                books.isLast()
         );
     }
 }
