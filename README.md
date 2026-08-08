@@ -1,6 +1,6 @@
 # ReadCycle Backend
 
-Spring Boot backend for the ReadCycle recycling platform.
+Spring Boot backend for the ReadCycle book exchange platform platform.
 
 ## Tech Stack
 - Java
