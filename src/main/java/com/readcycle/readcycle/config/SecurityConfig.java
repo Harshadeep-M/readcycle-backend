@@ -12,9 +12,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
+
+    public SecurityConfig() {
+        System.out.println("========== SECURITY CONFIG LOADED ==========");
+    }
 
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -27,15 +34,23 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
+        System.out.println("Creating Security Filter Chain");
+
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login").permitAll()
-                        .requestMatchers("/users").permitAll()   // registration + get users (temporary)
-                        .anyRequest().authenticated()
+
+                        // Public APIs
+                        .requestMatchers(HttpMethod.POST,
+                                "/users",
+                                "/auth/login")
+                        .permitAll()
+
+                        // Protected APIs
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class)
@@ -43,4 +58,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-}
+    }
