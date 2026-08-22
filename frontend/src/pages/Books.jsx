@@ -25,11 +25,12 @@ function Books() {
 
       <div className="books-grid">
         {books.map(book => (
-          <BookCard
-            key={book.id}
-            title={book.title}
-            author={book.author}
-          />
+         <BookCard
+           key={book.id}
+           id={book.id}
+           title={book.title}
+           author={book.author}
+         />
         ))}
       </div>
     </div>
