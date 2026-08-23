@@ -571,3 +571,81 @@ main {
   font-size: 17px;
   margin-top: 40px;
 }
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 30px;
+  background: #f8f7f4;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 450px;
+  background: #ffffff;
+  padding: 45px;
+  border-radius: 10px;
+}
+
+.login-label {
+  font-size: 13px;
+  letter-spacing: 3px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.login-card h1 {
+  font-size: 42px;
+  margin: 0 0 10px;
+}
+
+.login-description {
+  color: #666;
+  margin-bottom: 35px;
+}
+
+.form-group {
+  margin-bottom: 22px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 15px;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #222;
+}
+
+.login-button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 5px;
+  background: #222;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.login-button:hover {
+  background: #444;
+}
+
+.login-message {
+  margin-top: 20px;
+  text-align: center;
+  color: #555;
+}

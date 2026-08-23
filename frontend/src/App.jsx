@@ -3,6 +3,7 @@ import Home from './pages/Home'
 import './App.css'
 import Books from './pages/Books'
 import BookDetails from './pages/BookDetails'
+import Login from './pages/Login'
 function App() {
   return (
     <BrowserRouter>
@@ -10,6 +11,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/books" element={<Books />} />
         <Route path="/books/:id" element={<BookDetails />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </BrowserRouter>
   )

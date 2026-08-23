@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -61,14 +60,17 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
 
         System.out.println("Creating Security Filter Chain");
 
         http
                 .csrf(csrf -> csrf.disable())
 
-                .cors(Customizer.withDefaults())
+                .cors(cors ->
+                        cors.configurationSource(corsConfigurationSource())
+                )
 
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
@@ -84,15 +86,19 @@ public class SecurityConfig {
                                 "/auth/login"
                         ).permitAll()
 
-                        .anyRequest().permitAll()
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/books",
+                                "/books/**"
+                        ).permitAll()
+
+                        .anyRequest().authenticated()
                 )
 
                 .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
-                )
-
-                .httpBasic(Customizer.withDefaults());
+                );
 
         return http.build();
     }
