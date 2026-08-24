@@ -1,19 +1,18 @@
 package com.readcycle.readcycle.service;
 
-import com.readcycle.readcycle.dto.ApiResponse;
 import com.readcycle.readcycle.dto.JwtResponse;
 import com.readcycle.readcycle.dto.LoginRequest;
 import com.readcycle.readcycle.dto.UserDTO;
 import com.readcycle.readcycle.entity.User;
 import com.readcycle.readcycle.exception.ResourceNotFoundException;
 import com.readcycle.readcycle.repository.UserRepository;
+import com.readcycle.readcycle.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.readcycle.readcycle.security.JwtUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,6 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
 
     @Autowired
     private UserRepository userRepository;
@@ -45,6 +43,7 @@ public class UserService {
                     user.getName(),
                     user.getEmail()
             );
+
             userDTOList.add(dto);
         }
 
@@ -54,6 +53,7 @@ public class UserService {
     public User createUser(User user) {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         return userRepository.save(user);
     }
 
@@ -61,7 +61,10 @@ public class UserService {
 
         return userRepository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found with id: " + id));
+                        new ResourceNotFoundException(
+                                "User not found with id: " + id
+                        )
+                );
     }
 
     public void deleteUser(Long id) {
@@ -77,7 +80,9 @@ public class UserService {
 
             user.setName(updatedUser.getName());
             user.setEmail(updatedUser.getEmail());
-            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            user.setPassword(
+                    passwordEncoder.encode(updatedUser.getPassword())
+            );
 
             return userRepository.save(user);
         }
@@ -107,6 +112,6 @@ public class UserService {
 
         String token = jwtUtil.generateToken(user.getEmail());
 
-        return new JwtResponse(token);
+        return new JwtResponse(token, user.getId());
     }
 }

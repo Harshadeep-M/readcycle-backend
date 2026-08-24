@@ -26,11 +26,17 @@ function Login() {
         throw new Error('Login failed')
       }
 
-      const data = await response.json()
+   const data = await response.json()
 
-      localStorage.setItem('token', data.token)
+   console.log('LOGIN RESPONSE:', data)
 
-      setMessage('Login successful!')
+   localStorage.setItem('token', data.token)
+   localStorage.setItem('userId', data.userId)
+
+   console.log('TOKEN:', localStorage.getItem('token'))
+   console.log('USER ID:', localStorage.getItem('userId'))
+
+   setMessage('Login successful!')
     } catch (error) {
       console.error('Login error:', error)
       setMessage('Invalid email or password.')
