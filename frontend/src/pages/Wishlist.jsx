@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { apiFetch } from '../api/api'
 
 function Wishlist() {
@@ -6,13 +7,24 @@ function Wishlist() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Temporary user ID.
-    // We'll replace this with the authenticated user's ID.
     const userId = localStorage.getItem('userId')
+
     const fetchWishlist = async () => {
       try {
-        const data = await apiFetch(`/wishlist/${userId}`)
-        setWishlist(data)
+        const wishlistData = await apiFetch(`/wishlist/${userId}`)
+
+        const wishlistWithBooks = await Promise.all(
+          wishlistData.map(async item => {
+            const book = await apiFetch(`/books/${item.bookId}`)
+
+            return {
+              wishlistId: item.id,
+              ...book
+            }
+          })
+        )
+
+        setWishlist(wishlistWithBooks)
       } catch (error) {
         console.error('Error fetching wishlist:', error)
       } finally {
@@ -23,6 +35,20 @@ function Wishlist() {
     fetchWishlist()
   }, [])
 
+  const handleRemove = async wishlistId => {
+    try {
+      await apiFetch(`/wishlist/${wishlistId}`, {
+        method: 'DELETE'
+      })
+
+      setWishlist(
+        wishlist.filter(item => item.wishlistId !== wishlistId)
+      )
+    } catch (error) {
+      console.error('Error removing from wishlist:', error)
+    }
+  }
+
   if (loading) {
     return <p className="loading">Loading wishlist...</p>
   }
@@ -32,8 +58,12 @@ function Wishlist() {
 
       <div className="books-header">
         <p>YOUR COLLECTION</p>
+
         <h1>Wishlist</h1>
-        <p>Books you want to read or exchange.</p>
+
+        <p>
+          Books you want to read or exchange.
+        </p>
       </div>
 
       {wishlist.length === 0 ? (
@@ -42,19 +72,62 @@ function Wishlist() {
         </p>
       ) : (
         <div className="wishlist-grid">
+
           {wishlist.map(item => (
-            <div className="wishlist-card" key={item.id}>
+            <div
+              className="wishlist-card"
+              key={item.wishlistId}
+            >
+
               <div className="book-cover">
                 <span>BOOK</span>
               </div>
 
-              <h3>Book ID: {item.bookId}</h3>
+              <h3>{item.title}</h3>
 
-              <button>
-                Remove
-              </button>
+              <p className="wishlist-author">
+                {item.author}
+              </p>
+
+              <p className="wishlist-description">
+                {item.description}
+              </p>
+
+              <div className="wishlist-status">
+                <span
+                  className={
+                    item.available
+                      ? 'status available'
+                      : 'status unavailable'
+                  }
+                >
+                  {item.available
+                    ? 'Available'
+                    : 'Not Available'}
+                </span>
+              </div>
+
+              <div className="wishlist-actions">
+
+                <Link to={`/books/${item.id}`}>
+                  <button>
+                    View Book
+                  </button>
+                </Link>
+
+                <button
+                  onClick={() =>
+                    handleRemove(item.wishlistId)
+                  }
+                >
+                  Remove
+                </button>
+
+              </div>
+
             </div>
           ))}
+
         </div>
       )}
 

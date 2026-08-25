@@ -712,3 +712,54 @@ main {
     grid-template-columns: 1fr;
   }
 }
+.details-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.wishlist-message {
+  margin-top: 15px;
+  color: #666;
+  font-size: 14px;
+}
+.wishlist-author {
+  color: #666;
+  margin: 0 0 12px;
+}
+
+.wishlist-description {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.wishlist-status {
+  margin-bottom: 18px;
+}
+
+.wishlist-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.wishlist-actions button {
+  padding: 10px 16px;
+  border: 1px solid #222;
+  border-radius: 5px;
+  background: transparent;
+  color: #222;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.wishlist-actions button:hover {
+  background: #222;
+  color: white;
+}
+
+.wishlist-actions a {
+  text-decoration: none;
+}
