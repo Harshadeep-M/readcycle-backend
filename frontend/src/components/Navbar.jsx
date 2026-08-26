@@ -8,6 +8,7 @@ function Navbar() {
 
   const handleLogout = () => {
     localStorage.removeItem('token')
+    localStorage.removeItem('userId')
     setIsLoggedIn(false)
   }
 
@@ -21,9 +22,13 @@ function Navbar() {
         <Link to="/">Home</Link>
         <Link to="/books">Browse Books</Link>
         <Link to="/wishlist">Wishlist</Link>
+        <Link to="/exchange">Exchanges</Link>
 
         {isLoggedIn ? (
-          <button onClick={handleLogout} className="logout-button">
+          <button
+            onClick={handleLogout}
+            className="logout-button"
+          >
             Logout
           </button>
         ) : (

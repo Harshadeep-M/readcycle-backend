@@ -6,9 +6,13 @@ function BookDetails() {
   const { id } = useParams()
 
   const [book, setBook] = useState(null)
+
   const [isWishlisted, setIsWishlisted] = useState(false)
   const [wishlistId, setWishlistId] = useState(null)
   const [wishlistMessage, setWishlistMessage] = useState('')
+
+  const [exchangeMessage, setExchangeMessage] = useState('')
+  const [exchangeLoading, setExchangeLoading] = useState(false)
 
   useEffect(() => {
     fetch(`http://localhost:8080/books/${id}`)
@@ -83,6 +87,35 @@ function BookDetails() {
     }
   }
 
+  const handleExchangeRequest = async () => {
+    const userId = localStorage.getItem('userId')
+
+    if (!userId) {
+      setExchangeMessage('Please login to request an exchange.')
+      return
+    }
+
+    setExchangeLoading(true)
+    setExchangeMessage('')
+
+    try {
+      await apiFetch('/exchange', {
+        method: 'POST',
+        body: JSON.stringify({
+          requesterId: Number(userId),
+          bookId: Number(id)
+        })
+      })
+
+      setExchangeMessage('Exchange request sent successfully.')
+    } catch (error) {
+      console.error('Exchange request error:', error)
+      setExchangeMessage('Could not send exchange request.')
+    } finally {
+      setExchangeLoading(false)
+    }
+  }
+
   if (!book) {
     return <p className="loading">Loading...</p>
   }
@@ -139,8 +172,14 @@ function BookDetails() {
                 : 'Add to Wishlist'}
             </button>
 
-            <button className="exchange-button">
-              Request Exchange
+            <button
+              className="exchange-button"
+              onClick={handleExchangeRequest}
+              disabled={exchangeLoading}
+            >
+              {exchangeLoading
+                ? 'Sending...'
+                : 'Request Exchange'}
             </button>
 
           </div>
@@ -148,6 +187,12 @@ function BookDetails() {
           {wishlistMessage && (
             <p className="wishlist-message">
               {wishlistMessage}
+            </p>
+          )}
+
+          {exchangeMessage && (
+            <p className="exchange-message">
+              {exchangeMessage}
             </p>
           )}
 
